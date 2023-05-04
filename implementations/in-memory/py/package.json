@@ -1,0 +1,12 @@
+{
+  "name": "@polywrap/python-in-memory-cache-plugin",
+  "description": "Polywrap Python InMemoryCache Plugin",
+  "version": "0.10.2",
+  "private": true,
+  "devDependencies": {
+    "polywrap": "0.10.2"
+  },
+  "scripts": {
+    "codegen": "npx polywrap codegen"
+  }
+}

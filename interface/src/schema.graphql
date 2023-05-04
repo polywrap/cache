@@ -30,6 +30,10 @@ type Module {
   """
   clear: Boolean!
 
-  # retrieve all the keys in the cache
+  """
+  retrieve all the keys in the cache.
+  """
+  keys: [String!]!
+
   # different extensions for the different cache implementations
 }

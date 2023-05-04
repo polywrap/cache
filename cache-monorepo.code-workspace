@@ -9,12 +9,12 @@
         "path": "interface"
       },
       {
-          "name": "python-plugin",
-          "path": "implementations/py"
+          "name": "in-memory-py",
+          "path": "implementations/in-memory/py"
       },
       {
-          "name": "javascript-plugin",
-          "path": "implementations/js"
+          "name": "in-memory-js",
+          "path": "implementations/in-memory/js"
       },
   ],
   "settings": {
