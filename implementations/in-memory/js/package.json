@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "rimraf ./build && tsc --project tsconfig.json",
-    "prebuild": "npx polywrap codegen",
+    "prebuild": "yarn --cwd ../../../interface build && npx polywrap codegen",
     "pretest": "npx polywrap codegen -m ./src/__tests__/types/polywrap.app.yaml -g ./src/__tests__/types/wrap",
     "test": "jest --passWithNoTests --runInBand --verbose"
   },

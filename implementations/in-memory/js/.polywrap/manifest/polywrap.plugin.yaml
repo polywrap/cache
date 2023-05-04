@@ -1,4 +1,4 @@
-format: 0.3.0
+format: 0.2.0
 project:
   type: plugin/typescript
   name: InMemoryCache
@@ -6,5 +6,5 @@ source:
   module: ./src/index.ts
   schema: ./src/schema.graphql
   import_abis:
-    - uri: ens/wraps.eth:cache@1.0.0
+    - uri: "ens/wraps.eth:cache@1.0.0"
       abi: ../../../interface/build/wrap.info
