@@ -1,5 +1,6 @@
 """This package contains the Filesystem plugin."""
 
+from collections import OrderedDict
 from polywrap_core import InvokerClient, UriPackageOrWrapper
 from polywrap_plugin import PluginPackage
 
@@ -9,7 +10,7 @@ from .wrap import manifest
 from dataclasses import dataclass
 from time import time
 import heapq
-from typing import Optional, Dict, List, Tuple, NamedTuple
+from typing import Optional, List, Tuple, NamedTuple
 from time import time
 
 
@@ -26,18 +27,26 @@ class CacheItem(NamedTuple):
 
 class InMemoryCachePlugin(Module[CacheConfig]):
     def __init__(self, config: CacheConfig):
-        self.cache: Dict[str, CacheItem] = {}
+        self.cache: OrderedDict[str, CacheItem] = OrderedDict()
         self.config = config
         self.expiration_heap: List[Tuple[float, str]] = []
 
     def _remove_expired_items(self):
+        # Remove expired items
         while self.expiration_heap:
             expiration_time, key = self.expiration_heap[0]
-            if time() > expiration_time:
-                heapq.heappop(self.expiration_heap)
-                self.cache.pop(key, None)
-            else:
+            if time() <= expiration_time:
                 break
+
+            heapq.heappop(self.expiration_heap)
+            self.cache.pop(key, None)
+        # Remove items based on LRU eviction policy
+        if self.config.size is not None and len(self.cache) >= self.config.size:
+            oldest_key, oldest_item = self.cache.popitem(last=False)
+            # Remove the item's expiration_time from the expiration_heap if it exists
+            if oldest_item.expiration_time is not None:
+                self.expiration_heap.remove((oldest_item.expiration_time, oldest_key))
+
 
     async def r_set(
         self,
@@ -45,7 +54,9 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
-        timeout = args["timeout"]
+        self._remove_expired_items()
+
+        timeout = args.get("timeout")
         if timeout is None:
             timeout = self.config.default_timeout
         expiration_time = time() + timeout if timeout else None
@@ -71,6 +82,8 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         if item := self.cache.get(args["key"]):
             value, expiration_time = item
             if expiration_time is None or time() <= expiration_time:
+                # Move the accessed item to the end of the OrderedDict
+                self.cache.move_to_end(args["key"])
                 return value
         return None
 
@@ -107,7 +120,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
-        self.cache = {}
+        self.cache = OrderedDict()
         self.expiration_heap = []
         return True
 

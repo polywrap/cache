@@ -8,7 +8,7 @@ version = "0.1.0a1"
 description = ""
 authors = ["Niraj <niraj@polywrap.io>"]
 readme = "README.md"
-packages = [{include = "polywrap_in_memory_plugin"}]
+packages = [{include = "polywrap_in_memory_cache_plugin"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -33,6 +33,8 @@ tox = "^3.26.0"
 tox-poetry = "^0.4.1"
 pytest-mock = "^3.10.0"
 pydocstyle = "^6.3.0"
+hypothesis = "^6.75.2"
+freezegun = "^1.2.2"
 
 [tool.bandit]
 exclude_dirs = ["tests"]
@@ -40,7 +42,7 @@ exclude_dirs = ["tests"]
 [tool.black]
 target-version = ["py310"]
 exclude = [
-    "polywrap_in_memory_plugin/wrap"
+    "polywrap_in_memory_cache_plugin/wrap"
 ]
 
 [tool.pyright]
@@ -63,13 +65,13 @@ disable = [
     "invalid-name"
 ]
 ignore-paths = [
-    "polywrap_in_memory_plugin/wrap"
+    "polywrap_in_memory_cache_plugin/wrap"
 ]
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-skip = ["polywrap_in_memory_plugin/wrap"]
+skip = ["polywrap_in_memory_cache_plugin/wrap"]
 
 [tool.pydocstyle]
 # default config
