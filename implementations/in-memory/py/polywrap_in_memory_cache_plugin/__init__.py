@@ -1,38 +1,42 @@
-"""This package contains the Filesystem plugin."""
+"""This package contains the InMemoryCache plugin."""
 
+import heapq
 from collections import OrderedDict
+from dataclasses import dataclass
+from time import time
+from typing import List, NamedTuple, Optional, Tuple
+
 from polywrap_core import InvokerClient, UriPackageOrWrapper
 from polywrap_plugin import PluginPackage
 
 from .wrap import *
 from .wrap import manifest
 
-from dataclasses import dataclass
-from time import time
-import heapq
-from typing import Optional, List, Tuple, NamedTuple
-from time import time
-
 
 @dataclass(slots=True, kw_only=True)
 class CacheConfig:
+    """Configuration for the InMemoryCachePlugin."""
     size: Optional[int] = None
     default_timeout: Optional[int] = None
 
 
 class CacheItem(NamedTuple):
+    """A cached item."""
     value: bytes
     expiration_time: Optional[float]
 
 
 class InMemoryCachePlugin(Module[CacheConfig]):
+    """A plugin that implements an in-memory cache."""
+
     def __init__(self, config: CacheConfig):
+        """Initialize the InMemoryCachePlugin."""
         self.cache: OrderedDict[str, CacheItem] = OrderedDict()
         self.config = config
         self.expiration_heap: List[Tuple[float, str]] = []
 
     def _remove_expired_items(self):
-        # Remove expired items
+        """Remove expired items from the cache."""
         while self.expiration_heap:
             expiration_time, key = self.expiration_heap[0]
             if time() <= expiration_time:
@@ -54,6 +58,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
+        """Set a value for the given key in the cache, overwrite existing value."""
         self._remove_expired_items()
 
         timeout = args.get("timeout")
@@ -79,6 +84,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> Optional[bytes]:
+        """Get a value for the given key from the cache."""
         if item := self.cache.get(args["key"]):
             value, expiration_time = item
             if expiration_time is None or time() <= expiration_time:
@@ -93,6 +99,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
+        """Check if a key exists in the cache."""
         return await self.get(args, client, env) is not None
 
     async def add(
@@ -101,6 +108,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
+        """Add a value for the given key in the cache, without overwriting existing value."""
         return False if await self.has(args, client, env) else await self.r_set(args, client, env)
 
     async def delete(
@@ -109,6 +117,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
+        """Delete a value for the given key from the cache."""
         if args["key"] in self.cache:
             del self.cache[args["key"]]
             return True
@@ -120,6 +129,7 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> bool:
+        """Clear the cache."""
         self.cache = OrderedDict()
         self.expiration_heap = []
         return True
@@ -130,11 +140,13 @@ class InMemoryCachePlugin(Module[CacheConfig]):
         client: InvokerClient[UriPackageOrWrapper],
         env: None
     ) -> list[str]:
+        """Get all keys in the cache."""
         self._remove_expired_items()
         return list(self.cache.keys())
 
 
 def in_memory_cache_plugin(config: CacheConfig) -> PluginPackage[CacheConfig]:
+    """Create a PluginPackage for the InMemoryCachePlugin."""
     return PluginPackage(
         module=InMemoryCachePlugin(config),
         manifest=manifest
