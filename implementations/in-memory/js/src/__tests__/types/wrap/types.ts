@@ -59,6 +59,10 @@ export interface Cache_Module_Args_clear {
 }
 
 /* URI: "ens/wraps.eth:cache@1.0.0" */
+export interface Cache_Module_Args_keys {
+}
+
+/* URI: "ens/wraps.eth:cache@1.0.0" */
 export const Cache_Module = {
   get: async (
     args: Cache_Module_Args_get,
@@ -128,6 +132,18 @@ export const Cache_Module = {
     return client.invoke<Types.Boolean>({
       uri: Uri.from(uri),
       method: "clear",
+      args: (args as unknown) as Record<string, unknown>,
+    });
+  },
+
+  keys: async (
+    args: Cache_Module_Args_keys,
+    client: CoreClient,
+    uri: string = "ens/wraps.eth:cache@1.0.0"
+  ): Promise<InvokeResult<Array<Types.String>>> => {
+    return client.invoke<Array<Types.String>>({
+      uri: Uri.from(uri),
+      method: "keys",
       args: (args as unknown) as Record<string, unknown>,
     });
   }

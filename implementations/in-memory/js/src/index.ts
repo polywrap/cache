@@ -56,6 +56,10 @@ export class InMemoryCachePlugin extends Module<InMemoryCachePluginConfig> {
   public has(args: Args_has): boolean {
     return this._cache.has(args.key);
   }
+
+  public keys(): string[] {
+    return Array.from(this._cache.keys());
+  }
 }
 
 export const inMemoryCachePlugin: PluginFactory<InMemoryCachePluginConfig> = () =>
