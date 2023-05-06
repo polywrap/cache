@@ -3,7 +3,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "polywrap-in-memory-plugin"
+name = "polywrap-in-memory-cache-plugin"
 version = "0.1.0a1"
 description = ""
 authors = ["Niraj <niraj@polywrap.io>"]
@@ -13,7 +13,6 @@ packages = [{include = "polywrap_in_memory_cache_plugin"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 polywrap-plugin = "0.1.0a29"
-httpx = "^0.23.3"
 polywrap-core = "^0.1.0a29"
 polywrap-msgpack = "^0.1.0a29"
 polywrap-manifest = "^0.1.0a29"
