@@ -90,7 +90,6 @@ export class InMemoryCachePlugin extends Module<InMemoryCachePluginConfig> {
   }
 
   public add(args: Args_add): boolean {
-    if (args.timeout) return false; // Timeout not implemented!
     if (this._cache.has(args.key)) return false;
 
     return this.set(args);
