@@ -1,0 +1,27 @@
+{
+  "folders": [
+      {
+        "name": "root",
+        "path": "."
+      },
+      {
+        "name": "interface",
+        "path": "interface"
+      },
+      {
+          "name": "in-memory-py",
+          "path": "implementations/in-memory/py"
+      },
+      {
+          "name": "in-memory-js",
+          "path": "implementations/in-memory/js"
+      },
+  ],
+  "settings": {
+      "files.exclude": {
+        "**/interface/*": true,
+        "**/implementations/*": true
+      },
+      "liveServer.settings.multiRootWorkspaceName": "root",
+  }
+}

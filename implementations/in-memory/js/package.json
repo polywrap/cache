@@ -1,0 +1,38 @@
+{
+  "name": "@polywrap/in-memory-cache-js",
+  "description": "In-memory cache implementation",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polywrap/integrations.git"
+  },
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "precodegen": "yarn --cwd ../../../interface build",
+    "codegen": "npx polywrap codegen",
+    "build": "rimraf ./build && tsc --project tsconfig.json",
+    "prebuild": "yarn codegen",
+    "pretest": "npx polywrap codegen -m ./src/__tests__/types/polywrap.app.yaml -g ./src/__tests__/types/wrap",
+    "test": "jest --passWithNoTests --runInBand --verbose"
+  },
+  "peerDependencies": {
+    "@polywrap/core-js": "0.10.x",
+    "@polywrap/plugin-js": "0.10.x"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "@types/node": "^20.1.0",
+    "@types/prettier": "2.3.2",
+    "jest": "^29.5.0",
+    "polywrap": "0.10.2",
+    "prettier": "2.3.2",
+    "rimraf": "3.0.2",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}

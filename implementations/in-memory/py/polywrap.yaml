@@ -1,0 +1,10 @@
+format: 0.3.0
+project:
+  name: InMemoryCache
+  type: plugin/python
+source:
+  schema: ./schema.graphql
+  module: ./polywrap_in_memory_cache_plugin/__init__.py
+  import_abis:
+    - uri: "wrap://ens/wraps.eth:cache@1.0.0"
+      abi: ../../../interface/build/wrap.info
